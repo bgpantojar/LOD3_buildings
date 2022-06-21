@@ -1,3 +1,12 @@
+"""
+This script contains the codes to generate LOD3 models.
+The codes are based on "Generation LOD3 models from structure-from-motion and semantic segmentation" 
+by Pantoja-Rosero et., al.
+https://doi.org/10.1016/j.autcon.2022.104430
+
+## NOTICE ##
+THIS SCRIPT IS TAKEN FROM TWO SOURCES:"""
+
 # Import Modules
 import os
 import argparse
@@ -37,9 +46,6 @@ class open_dataset(Dataset):
             path2annt = self.path2annts[idx]
             mask = Image.open(path2annt)
                 
-        #img= np.array(img)
-        #mask=np.array(mask)        
-
         if self.transform=='train':
                 if random.random()<.5:
                     img = TF.hflip(img)

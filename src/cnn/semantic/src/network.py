@@ -1,6 +1,10 @@
 """
-## NOTICE ##
-THIS SCRIPT IS TAKEN FROM TWO SOURCES:
+This script contains the codes to generate LOD3 models.
+The codes are based on "Generation LOD3 models from structure-from-motion and semantic segmentation" 
+by Pantoja-Rosero et., al.
+https://doi.org/10.1016/j.autcon.2022.104430
+
+This script specifically support LOD3 codes development. These are based on codes published in:
 - REFERENCE 1 FROM:  https://github.com/LeeJunHyun/Image_Segmentation
 - REFERENCE 2 FROM:  https://github.com/ternaus/robot-surgery-segmentation/blob/master/models.py
 HOWEVER, A NUMBER OF CHANGES HAS BEEN MADE AND SEVERAL COMMENTS ARE ADDED.

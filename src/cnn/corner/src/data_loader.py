@@ -1,6 +1,12 @@
 """
-## NOTICE ##
-THIS CODE IS TAKEN FROM THE GITHUB REPOSITORY: https://github.com/LeeJunHyun/Image_Segmentation
+
+This script contains the codes to generate LOD3 models.
+The codes are based on "Generation LOD3 models from structure-from-motion and semantic segmentation" 
+by Pantoja-Rosero et., al.
+https://doi.org/10.1016/j.autcon.2022.104430
+
+This script specifically support LOD3 codes development. These are based on codes published in:
+FROM THE GITHUB REPOSITORY: https://github.com/LeeJunHyun/Image_Segmentation
 HOWEVER, A NUMBER OF CHANGES HAS BEEN MADE AND SEVERAL COMMENTS ARE ADDED.
 
 The functions and classes defined in this script are used to load the images and ground truth files (as batches)
@@ -63,7 +69,6 @@ class ImageFolder(data.Dataset):
             transform = []
 
         # Resize image to 256 x 256 pixels.
-        #transform.append(T.Resize((512, 512)))
         transform.append(T.Resize((self.image_size, self.image_size)))
         # Change image to tensors as the input of the models must be tensors of
         # the size (batch size, channels, height, width)

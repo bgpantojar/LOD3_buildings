@@ -1,12 +1,18 @@
+"""
+This script contains the codes to generate LOD3 models.
+The codes are based on "Generation LOD3 models from structure-from-motion and semantic segmentation" 
+by Pantoja-Rosero et., al.
+https://doi.org/10.1016/j.autcon.2022.104430
+
+"""
+
 # Import Modules
 import os
-import argparse
 import random
 import torchvision.transforms.functional as TF
 import torchvision.transforms as T
 from torch.utils.data import Dataset
 from PIL import Image
-import numpy as np
 
 random.seed(100)
 
@@ -37,8 +43,6 @@ class open_dataset(Dataset):
             path2annt = self.path2annts[idx]
             mask = Image.open(path2annt)
                 
-        #img= np.array(img)
-        #mask=np.array(mask)        
 
         if self.transform=='train':
                 if random.random()<.5:
