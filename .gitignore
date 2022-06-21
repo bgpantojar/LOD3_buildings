@@ -1,0 +1,8 @@
+*.pyc
+data/
+results/
+.vscode/
+examples/
+weights/
+freecad_dev/
+launch.json

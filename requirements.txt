@@ -1,0 +1,11 @@
+Pillow
+numpy
+pylab-sdk
+requests
+scipy
+matplotlib
+scikit-learn
+opencv-python
+opencv-contrib-python
+scikit-image
+seaborn
