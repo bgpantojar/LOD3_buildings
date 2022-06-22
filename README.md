@@ -19,7 +19,7 @@ Clone repository in your local machine. All codes related with method are inside
 
 ### 2. Download data and CNN weights
 
-Example input data can be downloaded from [Dataset for generating LOD3 building models from structure-from-motion and semantic segmentation](https://doi.org/10.5281/zenodo.6651663). This datased contains 4 main folders. SfM, weights, data and results. Extract the folders `data/` and `weights/` and place them inside the repository folder
+Example input data can be downloaded from [Dataset for generating LOD3 building models from structure-from-motion and semantic segmentation](https://doi.org/10.5281/zenodo.6651663). This datased contains 5 main folders. SfM, polyfit, weights, data and results. Extract the folders `data/` and `weights/` and place them inside the repository folder
 
 #### 2a. Repository directory
 
