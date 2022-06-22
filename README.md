@@ -2,12 +2,12 @@
 This repository contains the codes for computing geometrical digital twins as LOD3 models for buildings using a structure from motion and semantic segmentation. The methodoly hereby implementes was presented in the paper [Generating LOD3 building models from structure-from-motion and semantic segmentation" by Pantoja-Rosero et., al. (2022)] (https://doi.org/10.1016/j.autcon.2022.104430)
 
 <p align="center">
-  <img src=docs/images/lod3_01.gif>
+  <img src=docs/images/lod3_01.png>
 </p>
 
 
 <p align="center">
-  <img src=docs/images/lod3_02.gif>
+  <img src=docs/images/lod3_02.png>
 </p>
 
 
