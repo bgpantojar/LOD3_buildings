@@ -717,7 +717,7 @@ def corn_filt_3(current_open_corners_filtered):
 
     return current_open_corners_filtered
 
-def corn_filt_4(face_open_area, face_open_corners):
+def corn_filt_4(face_open_area, face_open_corners, cte_fil4 = .2):
     """
         Filter4: Rid off small openings. If area of an opening is
         smaller than an area percentage of the biggest in the face (15% --adjust)
@@ -736,7 +736,7 @@ def corn_filt_4(face_open_area, face_open_corners):
         cp_face_open_area = np.copy(face_open_area)
         cp_face_open_area.sort()
         s_biggest_area = cp_face_open_area[-2]
-        cte = .1 #!
+        cte = cte_fil4 #!
         small_openings = np.where(face_open_area<cte*s_biggest_area) 
         for indx in sorted(small_openings[0], reverse=True):
             del face_open_corners[indx]
@@ -917,7 +917,7 @@ def op_area(current_open_corners_filtered):
 
     return current_open_area
 
-def op_detector_4p_1(opening_information, opening_labeled_corners, images_path, data_folder, two_views):
+def op_detector_4p_1(opening_information, opening_labeled_corners, images_path, data_folder, two_views, cte_fil4 = .2):
     """_summary_
         Function to select just 4 points (4p) by opening according the ones nearest to the 
         boxes corners
@@ -982,7 +982,7 @@ def op_detector_4p_1(opening_information, opening_labeled_corners, images_path, 
                     face_open_area.append(current_open_area)
         
         #Filter4: Rid off small openings
-        face_open_corners_ord = corn_filt_4(face_open_area, face_open_corners)
+        face_open_corners_ord = corn_filt_4(face_open_area, face_open_corners, cte_fil4 = cte_fil4)
         
         #Filter4.5: Rid off openings outside the main facade
         face_open_corners_ord_fac, main_facade = corn_filt_4_5(face_open_corners_ord, fac_prediction[key])
@@ -1003,7 +1003,7 @@ def op_detector_4p_1(opening_information, opening_labeled_corners, images_path, 
     return building_open_corners
 
 
-def op_detector_4p_2(opening_information, images_path, data_folder, bound_box, two_views):
+def op_detector_4p_2(opening_information, images_path, data_folder, bound_box, two_views, cte_fil4 = .2):
     """
         Function to select just 4 points (4p) by opening according the ones nearest to the 
         boxes corners. This function is used when the deep learning model is the unet
@@ -1060,7 +1060,7 @@ def op_detector_4p_2(opening_information, images_path, data_folder, bound_box, t
                 face_open_area.append(current_open_area)
                 
         #Filter4: Rid off small openings
-        face_open_corners_ord = corn_filt_4(face_open_area, face_open_corners)
+        face_open_corners_ord = corn_filt_4(face_open_area, face_open_corners, cte_fil4 = cte_fil4)
                 
         #Filter4.5: Rid off openings outside the main facade
         face_open_corners_ord_fac, main_facade = corn_filt_4_5(face_open_corners_ord, fac_prediction[key])
@@ -1082,7 +1082,7 @@ def op_detector_4p_2(opening_information, images_path, data_folder, bound_box, t
     return building_open_corners
 
 
-def main_op_detector(data_folder, images_path, bound_box, op_det_nn, two_views=False):
+def main_op_detector(data_folder, images_path, bound_box, op_det_nn, two_views=False, cte_fil4 = .2):
     """This function returns the openings detected by deep learning models as
     sets of four points for each opening.
 
@@ -1100,9 +1100,9 @@ def main_op_detector(data_folder, images_path, bound_box, op_det_nn, two_views=F
     if op_det_nn == 'ssd':
         opening_information = op_detector_1(data_folder, images_path, two_views)
         opening_labeled_corners = op_detector_labeler(opening_information)
-        opening_4points = op_detector_4p_1(opening_information, opening_labeled_corners, images_path, data_folder, two_views)
+        opening_4points = op_detector_4p_1(opening_information, opening_labeled_corners, images_path, data_folder, two_views, cte_fil4 = cte_fil4)
     elif op_det_nn == 'unet':
         opening_information = op_detector_2(data_folder, images_path, bound_box, two_views)
-        opening_4points = op_detector_4p_2(opening_information, images_path, data_folder, bound_box, two_views)
+        opening_4points = op_detector_4p_2(opening_information, images_path, data_folder, bound_box, two_views, cte_fil4 = cte_fil4)
 
     return opening_4points

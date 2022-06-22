@@ -106,7 +106,7 @@ class Open:
         openn = Part.Face(poly)
         return openn
     
-    def build_open_ext(self):
+    def build_open_ext(self, cte_ext=3):
         poly = Part.makePolygon([tuple(self.o_vert[i]) for i in range(len(self.o_vert))])
         openn = Part.Face(poly)
         #Finding normal to triangular opening to extrude in that direction
@@ -114,15 +114,15 @@ class Open:
         normal = np.cross(P[0]-P[1], P[0]-P[2])
         normal = normal * (1/np.linalg.norm(normal))
         lenght = min(np.linalg.norm(P[0]-P[1]),np.linalg.norm(P[0]-P[2]),np.linalg.norm(P[1]-P[2]))
-        openn_e1 = openn.extrude(Base.Vector(3*lenght*normal)) #!
-        openn_e2 = openn.extrude(Base.Vector(-3*lenght*normal)) #!
+        openn_e1 = openn.extrude(Base.Vector(cte_ext*lenght*normal)) #!
+        openn_e2 = openn.extrude(Base.Vector(-cte_ext*lenght*normal)) #!
         openn_e = openn_e1.fuse(openn_e2)
         
         return openn_e
 
 
 #BULDING THE LOD3 model using structures and methods
-def op_builder(data_folder, data_path, polyfit_path, dense=False):
+def op_builder(data_folder, data_path, polyfit_path, dense=False, cte_ext = 3):
     #Loading polyfit model vertices and faces
     vertices_p = list()
     faces_p = list()
@@ -178,7 +178,7 @@ def op_builder(data_folder, data_path, polyfit_path, dense=False):
         O.o_vert.append(vertices_o[o[0]-1])
         
         O.open_free = O.build_open()
-        O.open_free_ext = O.build_open_ext()
+        O.open_free_ext = O.build_open_ext(cte_ext=cte_ext)
         opens.append(O)
 
     B = Building(len(faces), faces, opens)

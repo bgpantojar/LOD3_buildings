@@ -14,8 +14,6 @@ The codes are based on "Generation LOD3 models from structure-from-motion and se
 by Pantoja-Rosero et., al.
 https://doi.org/10.1016/j.autcon.2022.104430
 
-This script specifically support
-
 @author: pantoja
 """
 
@@ -94,8 +92,9 @@ def track_kps(data_folder, imm1, imm2, im_n1, im_n2, kps_imm1=None):
     for i, (new,old) in enumerate(zip(good_new,good_old)):
         a,b = new.ravel()
         c,d = old.ravel()
-        frame1 = cv2.circle(frame1,(c,d),20,color[i].tolist(),-1)
-        frame2 = cv2.circle(frame2,(a,b),20,color[i].tolist(),-1)
+        print(frame1,(c,d),20,color[i].tolist(),-1)
+        frame1 = cv2.circle(frame1,(int(c),int(d)),20,color[i].tolist(),-1)
+        frame2 = cv2.circle(frame2,(int(a),int(b)),20,color[i].tolist(),-1)
     # Display the image with the flow lines
     #Save images with tracks
     cv2.imwrite('../results/'+data_folder+'/KLT_frame1_' + im_n1+ '.png', cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB))
@@ -111,7 +110,7 @@ def track_kps(data_folder, imm1, imm2, im_n1, im_n2, kps_imm1=None):
 
 
 
-def imgs_corners(im1, im2, imm1, imm2, i, keypoints_path, how2get_kp, opening_4points, pp, data_folder, save_op_corners=True):
+def imgs_corners(im1, im2, imm1, imm2, i, keypoints_path, how2get_kp, opening_4points, data_folder, pp=None, save_op_corners=True):
     """
 
         Geting opening corners coordinates on images im1 and im2
@@ -125,7 +124,7 @@ def imgs_corners(im1, im2, imm1, imm2, i, keypoints_path, how2get_kp, opening_4p
         keypoints_path (str): path to keypoints
         how2get_kp (int): method to get opening corners to triangulate 0:from CNN detector+homography, 1: loading npy files, 2:clicking on two views, 3: v1 from npy+v2 with homography, 4:from CNN detector+homography
         opening_4points (dict): opening corners for each facade
-        pp (int): list with number of corners to be triangulated for each facade
+        pp (int, optional): list with number of corners to be triangulated for each facade - used if how2get_kp==2
         data_folder (str): path to input data folder
         save_op_corners (bool, optional): _description_. Defaults to True.
     Returns:
@@ -200,6 +199,7 @@ def imgs_corners(im1, im2, imm1, imm2, i, keypoints_path, how2get_kp, opening_4p
         np.save(keypoints_path + "x1_{}".format(i), x1)
         np.save(keypoints_path + "x2_{}".format(i), x2)
         v_H=0
+        H = None
         
     
     
@@ -398,6 +398,13 @@ def open2local(X, faces_normals, normal_op_plane):
         dir_vect_h[2*ee] = ed_h1
         dir_vect_h[2*ee+1] = ed_h2
         
+
+
+
+
+
+
+
     #Choosing building normal with similar direction to the edges
     mean_dir_h = (np.mean(dir_vect_h, axis=0))/(np.linalg.norm(np.mean(dir_vect_h, axis=0)))
     #Look for the dir_vect_h with minimum angle with building normals
@@ -445,7 +452,7 @@ def open2local(X, faces_normals, normal_op_plane):
     return Xl, T
 
 
-def op_aligning1(Xl):
+def op_aligning1(Xl, cte = .05):
     """
     Aligning the width and height of the openings (Aligment 1 --> to linear regression model).
 
@@ -454,9 +461,8 @@ def op_aligning1(Xl):
     Returns:
         Xl_al (array): aligned local coordinates of opening corners
     """
-        
-    #Threshold (depends on how the keypoints are organized)
-    cte =.05 #! 
+    print("THE CONSTANT IS ", cte)    
+    #Threshold (depends on how the keypoints are organized)#!
     threshold = cte*np.abs(np.min(((Xl[0,0]-Xl[0,1]),(Xl[1,0]-Xl[1,2]))))
     
     #ALIGNING TO LINES
@@ -512,7 +518,7 @@ def op_aligning1(Xl):
     return Xl_al
 
 
-def op_aligning2(Xl_al):
+def op_aligning2(Xl_al, cte = .35):
     """
 
     Aligning the width and height of the openings (Aligment 2 --> same width and height)
@@ -522,12 +528,9 @@ def op_aligning2(Xl_al):
     Return:
         Xl_al2 (array): aligned local coordinates of opening corners (same width - height)
     """
-    #Same width and height for openings    
-    #cte = .8 #School, Unil,
-    #cte = .4 #Ozcan, Bianco
-    #cte = .8 #unil1
-    #cte = .5 #chamb 2
-    cte = .35 #! 
+    print("THE CONSTANT IS ", cte)    
+
+    #Same width and height for openings#!    
     threshold = cte*np.abs(np.min(((Xl_al[0,0]-Xl_al[0,1]),(Xl_al[1,0]-Xl_al[1,2]))))     
        
     #Vertical alignment
@@ -572,7 +575,7 @@ def op_aligning2(Xl_al):
     return Xl_al2
 
 
-def op_aligning3(Xl_al2):
+def op_aligning3(Xl_al2, cte1 = .1, cte2 = .3):
     """
 
     Equalizing areas. Aligning cetroids. Calculating area of each opening. Increment or decrease
@@ -584,6 +587,7 @@ def op_aligning3(Xl_al2):
     Returns:
         Xl_al3 (array): aligned local coordinates of opening corners (equal areas)
     """
+    print("THE CONSTANTS ARE ", cte1, cte2)    
         
     Xl_al3 = np.copy(Xl_al2)
     centroids = [] 
@@ -605,9 +609,8 @@ def op_aligning3(Xl_al2):
     edges_v = np.array(edges_v)
     
     
-    #Vertical centroids aligment
-    cte = .1 #! 
-    threshold = cte*np.abs(np.min(((Xl_al3[0,0]-Xl_al3[0,1]),(Xl_al3[1,0]-Xl_al3[1,2]))))     
+    #Vertical centroids aligment#!
+    threshold = cte1*np.abs(np.min(((Xl_al3[0,0]-Xl_al3[0,1]),(Xl_al3[1,0]-Xl_al3[1,2]))))     
     vert_checker = np.zeros(len(centroids)) #Checker to identify points already aligned
     centroids_al = np.zeros_like(centroids) 
     for ii, pt in enumerate(centroids[:,0]):
@@ -629,9 +632,8 @@ def op_aligning3(Xl_al2):
                 centroids_al[meet_thr,1] = np.copy(mean_coordinate)
             hori_checker[meet_thr] = 1
     
-    #Equalizing areas
-    cte = .3 #to establish a threshold in the area diferences. #!
-    threshold = cte*np.min(areas)
+    #Equalizing areas - to establish a threshold in the area diferences. #!
+    threshold = cte2*np.min(areas)
     area_checker = np.zeros(len(areas))
     edges_h_e = np.copy(edges_h)
     edges_v_e = np.copy(edges_v)
@@ -670,7 +672,7 @@ def op_aligning3(Xl_al2):
 
     
 def op_projector(data_folder, images_path, keypoints_path, polyfit_path, how2get_kp,\
-                 im1, im2, pp, P, K, k_dist, opening_4points, dense=False):
+                 im1, im2, P, K, k_dist, opening_4points, pp=None, dense=False, ctes=[.05, .8, .1, .3]):
     """
 
         Creates 3D objects for the openings segmented with deep learning using the camera matrices
@@ -684,12 +686,13 @@ def op_projector(data_folder, images_path, keypoints_path, polyfit_path, how2get
         how2get_kp (int): method to get opening corners to triangulate 0:from CNN detector+homography, 1: loading npy files, 2:clicking on two views, 3: v1 from npy+v2 with homography, 4:from CNN detector+homography
         im1 (list): list of input images view 1 for each facade
         im2 (list): list of input images view 2 for each facade
-        pp (int): list with number of corners to be triangulated for each facade
+        pp (int, optional): list with number of corners to be triangulated for each facade - used if how2get_kp==2
         P (dict): camera matrices for each camera pose
         K (dict): intrinsic matrices for each camera
         k_dist (dict): distorsion parameters for each camera
         opening_4points (dict): opening corners for each facade
         dense (bool, optional): if true, it loads the polyfit model from dense point cloud. Defaults to False.
+        ctes (list): constants that define thresholds when refining and aligning openings -- the lower the less influence
     """
     
     
@@ -720,7 +723,7 @@ def op_projector(data_folder, images_path, keypoints_path, polyfit_path, how2get
             imm2 = np.array(Image.open(images_path + "im2/" + im2[i] + '.png'))
 
         #Geting opening corners coordinates on images im1 and im2
-        x1, x2, _, _ = imgs_corners(im1,im2,imm1,imm2,i, keypoints_path, how2get_kp, opening_4points, pp, data_folder)
+        x1, x2, _, _ = imgs_corners(im1,im2,imm1,imm2,i, keypoints_path, how2get_kp, opening_4points, data_folder, pp=pp)
          
         #Correcting cordinates by lens distortion
         #x1_u = undistort_points(x1.T,K[P1_inid],k_dist[P1_inid]).T
@@ -743,14 +746,14 @@ def op_projector(data_folder, images_path, keypoints_path, polyfit_path, how2get
         #Taking corners X to a local plane. Xl
         Xl, T = open2local(X, faces_normals, normal_op_plane)
         #Aligning the width and height of the openings (Aligment 1 --> to linear regression model).
-        Xl_al = op_aligning1(Xl)
+        Xl_al = op_aligning1(Xl, cte = ctes[0])
        
-        #CLEANING 2.1: aligning  each openin
+        #CLEANING 2.1: aligning  each opening
         #Aligning the width and height of the openings (Aligment 2 --> same width and height)
-        Xl_al2 = op_aligning2(Xl_al)
+        Xl_al2 = op_aligning2(Xl_al, cte = ctes[1])
         
         #Equalizing areas
-        Xl_al3 = op_aligning3(Xl_al2)
+        Xl_al3 = op_aligning3(Xl_al2, cte1 = ctes[2], cte2 = ctes[3])
         
         #Taking to global coordinates again
         X_al = np.dot(np.linalg.inv(T),Xl_al3) 
