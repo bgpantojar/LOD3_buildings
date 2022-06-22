@@ -140,4 +140,21 @@ author = {B.G. Pantoja-Rosero and R. Achanta and M. Kozinski and P. Fua and F. P
 }
 ```
 Dataset:
-
+```
+@dataset{Pantoja-Rosero2022b-ds,
+  author       = {Pantoja-Rosero, Bryan German and
+                  Achanta, Radhakrishna and
+                  Kozinski, Mateusz and
+                  Fua, Pascal and
+                  Perez-Cruz, Fernando and
+                  Beyer, Katrin},
+  title        = {{Dataset for generating LOD3 building models from 
+                   structure-from-motion and semantic segmentation}},
+  month        = jun,
+  year         = 2022,
+  publisher    = {Zenodo},
+  version      = {v.0.0},
+  doi          = {10.5281/zenodo.6651663},
+  url          = {https://doi.org/10.5281/zenodo.6651663}
+}
+```
