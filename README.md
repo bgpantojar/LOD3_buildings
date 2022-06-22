@@ -28,6 +28,7 @@ The repository directory should look as:
 ```
 lod3_buildings
 └───data
+└───docs
 └───examples
 └───src
 └───weights
@@ -54,6 +55,7 @@ In addition to create the final 3D LOD3 building models, it is necessary [FreeCA
 ```
 lod3_buildings
 └───data
+└───docs
 └───examples
 └───freecad_dev
   └───usr
@@ -111,6 +113,7 @@ The repository directory after runing the medothology looks as:
 ```
 lod3_buildings
 └───data
+└───docs
 └───examples
 └───freecad_dev
 └───results
