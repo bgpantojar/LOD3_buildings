@@ -612,7 +612,7 @@ def op_aligning3(Xl_al2, cte1 = .1, cte2 = .3):
     #Vertical centroids aligment#!
     threshold = cte1*np.abs(np.min(((Xl_al3[0,0]-Xl_al3[0,1]),(Xl_al3[1,0]-Xl_al3[1,2]))))     
     vert_checker = np.zeros(len(centroids)) #Checker to identify points already aligned
-    centroids_al = np.zeros_like(centroids) 
+    centroids_al = np.copy(centroids) 
     for ii, pt in enumerate(centroids[:,0]):
         if vert_checker[ii] == 0:
             distances = np.abs(pt - centroids[:,0])
